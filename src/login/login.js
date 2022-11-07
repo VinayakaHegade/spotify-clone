@@ -27,7 +27,6 @@ window.addEventListener("load", () => {
     const accessToken = localStorage.getItem(ACCESS_TOKEN);
     if (accessToken) {
         window.location.href = `${APP_URL}/dashboard/dashboard.html`;
-        console.log("inside access")
     }
 
     if (window.opener !== null && !window.opener.closed) {
