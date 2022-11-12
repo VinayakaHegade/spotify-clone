@@ -6,8 +6,14 @@ module.exports = {
       colors: {
         "green": "#1DB954",
         "black": "#191414",
+        "light-black": "#282828",
         "white": "#FFFFFF",
-      }
+        "gray": "#535353",
+        "light-gray": "#b3b3b3"
+      },
+      gridTemplateColumns: {
+        'auto-fill-cards': 'repeat(auto-fill, minmax(200px, 1fr))'
+      },
     },
   },
   plugins: [],
