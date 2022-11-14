@@ -33,14 +33,16 @@ const loadUserProfile = async () => {
 
 
 //When a playlist item is clicked
-const onPlaylistItemClicked = (event) => {
-  const section = {type : SECTIONTYPE.PLAYLIST};
-  history.pushState(section , "" , "playlist");
+
+const onPlaylistItemClicked = (event, id) => {
+  const section = {type : SECTIONTYPE.PLAYLIST, playlist: id};
+  history.pushState(section , "" , `playlist/${id}`);
   loadSection(section);
 };
 
 
 //Playlist loading
+
 const loadPlaylist = async (endpoint,elementId) => {
   const { playlists: { items },} = await fetchRequest(endpoint);
   const playlistItemsSection = document.querySelector(`#${elementId}`);
@@ -50,7 +52,7 @@ const loadPlaylist = async (endpoint,elementId) => {
     playlistItem.className =" bg-black-secondary rounded p-4 hover:cursor-pointer hover:bg-light-black";
     playlistItem.id = id;
     playlistItem.setAttribute("data-type", "playlist");
-    playlistItem.addEventListener("click", onPlaylistItemClicked);
+    playlistItem.addEventListener("click", (event) => onPlaylistItemClicked(event,id));
     const [{ url: imageUrl }] = images;
     playlistItem.innerHTML = `<img src="${imageUrl}" alt="${name}" class = "rounded mb-2 object-contain shadow"/>
             <h2 class="text-base font-semibold mb-4 truncate">${name}</h2>
@@ -85,14 +87,23 @@ const fillDashboardContent = () => {
 
 
 //Loads and changes the section content dynamically based on where we are in the page
+
+const fillPlaylistContent = async (playlistId) => {
+  const playlist = await fetchRequest(`${ENDPOINT.playlist}/${playlistId}`)
+  const pageContent = document.querySelector("#page-content");
+  pageContent.innerHTML = "";
+  console.log(playlist);
+  
+
+}
+
 const loadSection = (section) => {
   if (section.type === SECTIONTYPE.DASHBOARD){
-    fillDashboardContent();
-    loadPlaylists();
-  }else{
+    // fillDashboardContent();
+    // loadPlaylists();
+  }else if (section.type === SECTIONTYPE.PLAYLIST) {
     //load elements for playlist
-    const pageContent = document.querySelector("#page-content");
-    pageContent.innerHTML = "Playlist to be loaded here"
+    fillPlaylistContent(section.playlist);
   }
 }
 
@@ -102,8 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const section = {type: SECTIONTYPE.DASHBOARD};
   history.pushState(section,"","");
   loadSection(section);
-  // fillDashboardContent();
-  // loadPlaylists();
   document.addEventListener("click", () => {
     const profileMenu = document.querySelector("#profile-menu");
     if (!profileMenu.classList.contains("hidden")) {
@@ -112,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   //Making header sticky as we scroll down
+
 document.querySelector(".content").addEventListener("scroll", (event) => {
   const { scrollTop } = event.target;
   const header = document.querySelector(".header");
