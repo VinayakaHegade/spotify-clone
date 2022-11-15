@@ -17,3 +17,10 @@
     grid-area: now-playing;
 }
 
+.track:hover .track-number, .track.selected .track-number{
+    visibility: hidden;
+}
+
+.track:hover .play, .track.selected .play{
+    visibility: visible;
+}
