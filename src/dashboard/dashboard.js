@@ -108,7 +108,25 @@ const onTrackSelection = (id, event) => {
   });
 };
 
-const onPlayTrack = (event, {}) => {};
+
+//Function to play the selected song
+const onPlayTrack = (event,{ image, artistNames, name, duration, previewURL, id }) => {
+  console.log(image, artistNames, name, duration, previewURL, id);
+  // <img id="now-playing-image" class="h-12 w-12" src="" />
+  //           <section class="flex flex-col justify-center">
+  //             <h2 id="now-playing-song" class="text-semibold text-sm text-white">song title</h2>
+  //             <p id="now-playing-artists" class="text-xs">song artists</p>
+  //           </section>
+
+  const nowPlayingSongImage = document.querySelector("#now-playing-image");
+  const songTitle = document.querySelector("#now-playing-song");
+  nowPlayingSongImage.src = image.url;
+  const artists = document.querySelector("#now-playing-artists");
+
+  songTitle.textContent = name;
+  artists.textContent = artistNames;
+
+};
 
 const loadPlaylistTracks = ({ tracks }) => {
   const trackSections = document.querySelector("#tracks");
@@ -118,7 +136,7 @@ const loadPlaylistTracks = ({ tracks }) => {
   //Creating track section
 
   for (let trackItem of tracks.items) {
-    let { id, artists, name, album, duration_ms: duration } = trackItem.track;
+    let { id, artists, name, album, duration_ms: duration, preview_url:previewURL } = trackItem.track;
     let { added_at } = trackItem;
 
     let track = document.createElement("section");
@@ -126,16 +144,14 @@ const loadPlaylistTracks = ({ tracks }) => {
     track.className =
       "track p-1 grid items-center justify-items-start grid-cols-[50px_1fr_1fr_.5fr_50px] gap-4 text-light-gray rounded-md hover:bg-light-black";
     let image = album.images.find((img) => img.height === 64);
+    let artistNames =  Array.from(artists,(artist) => artist.name).join(", ");
 
     track.innerHTML = `<p class="relative w-full flex items-center justify-center justify-self-center"><span class="track-number">${trackNumber++}</span></p>
               <section class="grid grid-cols-[auto_1fr] place-items-center gap-2">
                 <img class="h-10 w-10" src="${image.url}" alt="${name}"/>
                 <article class="flex flex-col gap-2 justify-center">
                   <h2 class="text-white text-bas line-clamp-1">${name}</h2>
-                  <p class="text-xs line-clamp-1">${Array.from(
-                    artists,
-                    (artist) => artist.name
-                  ).join(", ")}</p>
+                  <p class="text-xs line-clamp-1">${artistNames}</p>
                 </article>
               </section>
               <p class="text-sm line-clamp-2">${album.name}</p>
@@ -147,7 +163,7 @@ const loadPlaylistTracks = ({ tracks }) => {
     playButton.id = `play-track${id}`;
     playButton.className = `play w-full absolute left-0 text-lg text-4xl invisible`;
     playButton.textContent = "▸";
-    playButton.addEventListener("click", (event) => onPlayTrack(event));
+    playButton.addEventListener("click", (event) => onPlayTrack(event, {image, artistNames, name, duration, previewURL, id}));
     track.querySelector("p").appendChild(playButton);
 
     trackSections.appendChild(track);
@@ -159,14 +175,14 @@ const loadPlaylistTracks = ({ tracks }) => {
 const fillPlaylistContent = async (playlistId) => {
   const playlist = await fetchRequest(`${ENDPOINT.playlist}/${playlistId}`);
   const pageContent = document.querySelector("#page-content");
-  pageContent.innerHTML = `<header id="playlist-header" class="mx-8 py-4 border-light-gray border-b-[0.5px]">
+  pageContent.innerHTML = `<header id="playlist-header" class="mx-8 py-4 border-light-gray border-b-[0.5px] z-10">
           <nav class="py-2">
             <ul class="grid grid-cols-[50px_1fr_1fr_.5fr_50px] gap-4 text-light-gray">
               <li class="justify-self-center">#</li>
               <li>TITLE</li>
               <li>ALBUM</li>
               <li>DATE ADDED</li>
-              <li class="text-2xl">🕒</li>
+              <li><span style="font-size:22px"    class="material-symbols-outlined pt-1">schedule</span></li>
             </ul>
           </nav>
         </header>
