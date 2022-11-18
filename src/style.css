@@ -24,3 +24,8 @@
 .track:hover .play, .track.selected .play{
     visibility: visible;
 }
+
+.track.playing .track-number .track.playing .song-title{
+    color: theme("colors.green");
+
+}
