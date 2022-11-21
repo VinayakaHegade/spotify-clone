@@ -25,7 +25,7 @@
     visibility: visible;
 }
 
-.track.playing .track-number .track.playing .song-title{
+.track.playing .track-number, .track.playing .song-title{
     color: theme("colors.green");
 
 }
