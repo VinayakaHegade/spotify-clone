@@ -290,6 +290,7 @@ const onContentScroll = (event) => {
   const fiftyPercentHeight = totalHeight / 2;
   const coverOpacity =
     100 - (scrollTop >= totalHeight ? 100 : (scrollTop / totalHeight) * 100);
+  // console.log(coverOpacity)
   coverElement.style.opacity = `${coverOpacity}%`;
 
   // const headerOpacity = scrollTop >= header.offsetHeight ? 100 : (scrollTop / header.offsetHeight* 100;
@@ -298,10 +299,10 @@ const onContentScroll = (event) => {
   let headerOpacity = 0;
 
   // once 50% of cover element is crossed, start increasing the opacity
-  if(scrollTop >= fiftyPercentHeight && scrollTop  <= totalHeight){
+  if(scrollTop >= fiftyPercentHeight && scrollTop <= totalHeight){
     let totalDistance = totalHeight - fiftyPercentHeight;
-    let coverDistance = scrollTop - fiftyPercentHeight;
-    headerOpacity = (coverDistance/totalDistance) * 100;
+    let coveredDistance = scrollTop - fiftyPercentHeight;
+    headerOpacity = (coveredDistance/totalDistance) * 100;
   }else if (scrollTop > totalHeight) {
     headerOpacity  = 100;
   }else if(scrollTop < fiftyPercentHeight) {
@@ -311,7 +312,7 @@ const onContentScroll = (event) => {
 
   if (history.state.type == SECTIONTYPE.PLAYLIST) {
     const playlistHeader = document.querySelector("#playlist-header");
-    if (coverOpacity >= 60) {
+    if (headerOpacity >= 60) {
       playlistHeader.classList.add("sticky", "bg-black-secondary", "px-8");
       playlistHeader.classList.remove("mx-8");
       playlistHeader.style.top = `${header.offsetHeight}px`;
@@ -386,7 +387,7 @@ const onUserPlaylistClick = (id) => {
 
 const loadUserPlaylist = async ()=>{
   const playlists =  await fetchRequest(ENDPOINT.userPlaylist);
-  console.log(playlists);
+  // console.log(playlists);
   const userPlaylist = document.querySelector("#user-playlists >ul");
   userPlaylist.innerHTML = "";
   for (let {name, id } of playlists.items){
